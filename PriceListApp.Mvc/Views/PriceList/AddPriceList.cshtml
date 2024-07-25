@@ -1,0 +1,53 @@
+﻿@model PriceList
+@{
+    int i = 1;
+    var parametersTypes = ViewBag.ParameterTypes as List<ParameterType>;
+    List<int> Parameters = new();
+}
+
+<h4>Добавление прайс-листа</h4>
+
+<form method="post">
+    <div class="row g-3">
+        <div class="col-auto">
+            <button type="submit" class="btn btn-success mb-3">Продолжить</button>
+        </div>
+        <div class="col-auto">
+            <a asp-controller="PriceList" asp-action="Index" class="btn btn-light mb-3">Отмена</a>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="Name" class="form-label">Название прайс-листа</label>
+        <input type="text" class="form-control" asp-for="Name" placeholder="Прайс-лист от 22.01.2014">
+    </div>
+    <table class="table">
+        <tbody>
+            @foreach (var item in Model.Parameters)
+            {
+                <tr>
+                    <th>Колонка @i</th>
+                    <td><input type="text" name="Name" value="@item.Name" readonly/></td>
+                    <td>
+                        <select class="form-select" name="Type">
+                            @foreach (var parameterType in parametersTypes)
+                            {
+                                if (parameterType == item.Type)
+                                {
+                                    <option value="@parameterType" selected>@parameterType</option>
+                                }
+                                else
+                                {
+                                    <option value="@parameterType">@parameterType</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                    <td><a class="btn btn-danger" asp-controller="PriceList" asp-action="DeleteParameter" asp-route-id="@item.Id">Удалить</a></td>
+                </tr>
+                Parameters.Add(item.Id);
+                i++;
+            }
+        </tbody>
+    </table>
+@*     <a asp-controller="PriceList" asp-action="AddParameter" asp-route-parameters="@Parameters" class="btn btn-warning text-white">Добавить колонку</a> *@
+</form>

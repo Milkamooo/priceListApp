@@ -1,0 +1,25 @@
+﻿@model IOrderedEnumerable<PriceList>
+@{
+    int i = Model.Count();
+}
+
+<h4>Прайсы</h4>
+<a asp-controller="PriceList" asp-action="AddPriceList" class="btn btn-success">Прайс-лист</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Номер</th>
+            <th scope="col">Название</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@i</th>
+                <td><a asp-controller="PriceList" asp-action="GetPriceList" asp-route-id="@item.Id">@item.Name</a></td>
+            </tr>
+            i--;
+        }
+    </tbody>
+</table>
