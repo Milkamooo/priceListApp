@@ -8,6 +8,7 @@ namespace PriceListApp.Repository.Base
         T? GetById(int id);
         T Add(T entity);
         public void Remove(T entity);
+        public void Update(T entity);
     }
 
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
@@ -39,6 +40,12 @@ namespace PriceListApp.Repository.Base
                 _db.Set<T>().Remove(entityToRemove);
                 _db.SaveChanges();
             }
+        }
+
+        public void Update(T entity)
+        {
+            _db.Set<T>().Update(entity);
+            _db.SaveChanges();
         }
     }
 }

@@ -1,24 +1,52 @@
-﻿@model Product
+﻿@model PriceList
 @{
-    int i = 1;
+    var parametersTypes = ViewBag.ParameterTypes as List<ParameterType>;
 }
 
 <h4>Добавление товара</h4>
-<hr class="my-5"/>
-<form>
-    <div class="mb-3">
-        <label for="Name" class="form-label">Название</label>
-        <input type="text" class="form-control" name="Name">
-        <label for="Code" class="form-label">Артикул</label>
-        <input type="text" class="form-control" name="Code">
-    </div>
-    <hr class="my-5"/>
-    <div class="row g-3 justify-content-end">
-        <div class="col-auto">
-            <a asp-controller="PriceList" asp-action="GetPriceList" class="btn btn-light mb-3">Закрыть</a>
+<hr class="my-5" />
+@for (int i = 0; i < Model.Products.Count(); i++)
+{
+    <form asp-controller="Product" asp-action="AddProduct" method="post">
+        <div class="mb-3">
+            <label for="Name" class="form-label">Название</label>
+            <input type="text" class="form-control" asp-for="@Model.Products[i].Name">
+            <label for="Code" class="form-label">Артикул</label>
+            <input type="text" class="form-control" asp-for="@Model.Products[i].Code">
+            <input type="number" asp-for="@Model.Id" value="@Model.Id" hidden>
+            <input type="text" asp-for="@Model.Name" value="@Model.Name" hidden>
         </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-success mb-3">Сохранить</button>
+
+        @for (int j = 0; j < Model.Parameters.Count(); j++)
+        {
+            <div class="row m-3">
+                <div class="col-5">
+                    <label class="form-label">@Model.Parameters[j].Name</label>
+                </div>
+                <div class="col-7">
+                    @switch (Model.Parameters[j].Type)
+                    {
+                        case ParameterType.Number:
+                            <input type="number" class="form-control" asp-for="@Model.Products[i].ProductParameters[j].Value" />
+                            break;
+                        case ParameterType.SingleText:
+                            <input type="text" class="form-control" asp-for="@Model.Products[i].ProductParameters[j].Value" />
+                            break;
+                        case ParameterType.MultilineText:
+                            <textarea class="form-control" asp-for="@Model.Products[i].ProductParameters[j].Value"></textarea>
+                            break;
+                    }
+                </div>
+            </div>
+        }
+        <hr class="my-5" />
+        <div class="row g-3 justify-content-end">
+            <div class="col-auto">
+                <a asp-controller="PriceList" asp-action="GetPriceList" asp-route-id="@Model.Id" class="btn btn-light mb-3">Закрыть</a>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-success mb-3">Сохранить</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+}

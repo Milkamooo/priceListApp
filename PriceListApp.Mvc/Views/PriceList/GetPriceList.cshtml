@@ -5,15 +5,11 @@
 
 <div class="row g-3">
     <div class="col-auto">
-        <a asp-controller="Product" asp-action="AddProduct" class="btn btn-success mb-3">+ Добавить позицию</a>
+        <a asp-controller="Product" asp-action="AddProduct" asp-route-id="@Model.Id" class="btn btn-success mb-3">+ Добавить позицию</a>
     </div>
     <div class="col-auto">
         <a asp-controller="PriceList" asp-action="Index" class="btn btn-light mb-3">Назад к списку</a>
     </div>
-</div>
-<div class="mb-3">
-    <label for="Name" class="form-label">Название прайс-листа</label>
-    <input type="text" class="form-control" name="Name" placeholder="Прайс-лист от 22.01.2014">
 </div>
 <table class="table">
     <thead>

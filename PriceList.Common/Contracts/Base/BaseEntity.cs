@@ -9,8 +9,7 @@ namespace PriceListApp.Common.Contracts.Base
     }
 
     public class ExtendedBaseEntity : BaseEntity
-    {
-        [Required]
+    {   
         public string Name { get; set; } = string.Empty;
     }
 }

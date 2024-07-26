@@ -1,13 +1,12 @@
-﻿@model PriceList
+﻿@using Newtonsoft.Json
+@model PriceList
 @{
-    int i = 1;
     var parametersTypes = ViewBag.ParameterTypes as List<ParameterType>;
-    List<int> Parameters = new();
+    string parameterTypeInRus = string.Empty;
 }
 
 <h4>Добавление прайс-листа</h4>
-
-<form method="post">
+<form asp-controller="PriceList" asp-action="AddPriceList" method="post">
     <div class="row g-3">
         <div class="col-auto">
             <button type="submit" class="btn btn-success mb-3">Продолжить</button>
@@ -22,32 +21,50 @@
     </div>
     <table class="table">
         <tbody>
-            @foreach (var item in Model.Parameters)
+            @for (int i = 0; i < Model.Parameters.Count(); i++)
             {
                 <tr>
-                    <th>Колонка @i</th>
-                    <td><input type="text" name="Name" value="@item.Name" readonly/></td>
+                    <th>Колонка @(i + 1)</th>
+                    <td><input type="text" class="form-control" asp-for="@Model.Parameters[i].Name" value="@Model.Parameters[i].Name" required/></td>
                     <td>
-                        <select class="form-select" name="Type">
+                        <select class="form-select readonly" asp-for="@Model.Parameters[i].Type">
                             @foreach (var parameterType in parametersTypes)
                             {
-                                if (parameterType == item.Type)
+                                switch (parameterType)
                                 {
-                                    <option value="@parameterType" selected>@parameterType</option>
+                                    case ParameterType.Number:
+                                        parameterTypeInRus = "Число";
+                                        break;
+                                    case ParameterType.SingleText:
+                                        parameterTypeInRus = "Однострочный текст";
+                                        break;
+                                    case ParameterType.MultilineText:
+                                        parameterTypeInRus = "Многострочный текст";
+                                        break;
+                                    }
+                                if (parameterType == Model.Parameters[i].Type)
+                                {
+                                    <option value="@parameterType" selected>@parameterTypeInRus</option>
                                 }
                                 else
                                 {
-                                    <option value="@parameterType">@parameterType</option>
+                                    <option value="@parameterType">@parameterTypeInRus</option>
                                 }
                             }
                         </select>
                     </td>
-                    <td><a class="btn btn-danger" asp-controller="PriceList" asp-action="DeleteParameter" asp-route-id="@item.Id">Удалить</a></td>
+                    <td>
+                        <form asp-controller="PriceList" asp-action="DeleteParameter" asp-route-name="@Model.Parameters[i].Name" method="post">
+                            <input name="parametersArray" hidden value="@JsonConvert.SerializeObject(Model.Parameters)" />
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </form>
+                    </td>                      
                 </tr>
-                Parameters.Add(item.Id);
-                i++;
             }
         </tbody>
     </table>
-@*     <a asp-controller="PriceList" asp-action="AddParameter" asp-route-parameters="@Parameters" class="btn btn-warning text-white">Добавить колонку</a> *@
 </form>
+<form asp-controller="PriceList" asp-action="AddParameter" method="post">
+    <input name="parametersArray" hidden value="@JsonConvert.SerializeObject(Model.Parameters)" />
+    <button type="submit" class="btn btn-warning text-white">Добавить колонку</button>
+</form>     
